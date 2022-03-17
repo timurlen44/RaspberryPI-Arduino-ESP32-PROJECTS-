@@ -2,8 +2,6 @@
 Servo horizontal_ser ;
 Servo vertical_ser ;
 Servo trigger_ser ;
-char x;
-long int v;
 String str = "";
 String angle="";
 int i = 0;
