@@ -2,8 +2,8 @@ import serial
 import time
 import cv2
 import numpy as np
-#import threading
 import _thread
+import os.path
 
 Lazer_X = 150
 Lazer_Y = 150
@@ -13,35 +13,40 @@ Yposition = 50
 pos_step = 1
 sensivity = 40
 
-g = (0,255,0) # green
-r = (0,0,255) # red
-t = 3 # thickness
-
 control1=0
 control2=0
 control3=0
 control4=0
 
-lower_red = np.array([78,54,178])
-upper_red = np.array([179,209,241])
-
 blue_lower = np.array([75,201,49], np.uint8)
 blue_upper = np.array([129,255,255], np.uint8)
-"""
-Ã¶nceki deÄŸerler:
-blue_lower = np.array([103,135,36], np.uint8)
-blue_upper = np.array([160,255,255], np.uint8)
 
-"""
 
 
 kernel = np.ones((5,5), np.uint8)
 
-
+file_path = ''
 
 
 cap = cv2.VideoCapture(0)
-ser = serial.Serial("/dev/ttyUSB1", '1000000', timeout=2)
+def check_file(_file_path):
+    global file_path
+    if os.path.exists(_file_path):
+        file_path = _file_path
+
+
+
+
+check_file("/dev/ttyUSB0")
+check_file("/dev/ttyUSB1")
+
+while file_path == '':
+    print('please connect arduino')
+    check_file("/dev/ttyUSB0")
+    check_file("/dev/ttyUSB1")
+    time.sleep(3)
+
+ser = serial.Serial(file_path, '1000000', timeout=2)
 
 
     
@@ -59,7 +64,7 @@ def thread_func():
     reload_time = 0.25
     global wait
     while True:
-        gonder = str(Xposition) + 'a' + str(Yposition) + 'b'
+        gonder = str(Xposition)+'a' + str(Yposition) + 'b'
         
         
         counter2 = time.perf_counter()
@@ -80,10 +85,10 @@ def thread_func():
         time.sleep(0.15)
         
 try:
-    _thread.start_new_thread( thread_func, () )# print_time: bu thread in hangi fonksiyonu kullandÄ±ÄŸÄ±nÄ± belirtiyor ("Thread-1", 1) kÄ±smÄ± ise fonksiyona geÃ§ilecek argÃ¼manlarÄ± gÃ¶steriyor
+    _thread.start_new_thread( thread_func, () )
     
 except:
-    print ("Error : threadler Ã§alÄ±ÅŸmadÄ±")
+    print ("Error : Thread Do Not Work")
 
 
 _, frame = cap.read()
@@ -108,13 +113,11 @@ while True:
         if cv2.contourArea(cnt) < 10:
             trig_pos = 0
             break
-        
+        #////////////////////////////////////////////////////////////////////        
         (x, y, w, h) = cv2.boundingRect(cnt)
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        #////////////////////////////////////////////////////////////////////
         medium_x = int((x + x+w)/2)
         medium_y = int((y + y+h)/2)
-
         # ////////////////////////////////////////////////////////////////////
         control1=0
         control2=0
@@ -148,14 +151,12 @@ while True:
         else:
             control4 = 1
             
-        if(control1 and control2 and control3 and control4):# cisim ortadaysa
+        if(control1 and control2 and control3 and control4):
             trig_pos = 1
-            #print("atesssssss")
         else:
             trig_pos = 0
-            #print("duuuuuuuuuuurrrrrr")
         
-        #print("Kordinatlar: ",str(medium_x),"-",str(medium_y))
+        #print("Coordinates: ",str(medium_x),"-",str(medium_y))
         
 
         break
