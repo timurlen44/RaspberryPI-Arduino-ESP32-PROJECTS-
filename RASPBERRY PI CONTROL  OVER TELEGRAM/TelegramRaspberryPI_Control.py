@@ -114,7 +114,7 @@ def handle(msg):
     receiveTelegramMessage = True
 
 _thread.start_new_thread( thread_func, () )
-bot = telepot.Bot('5357108951:AAHrFrgRS0bi2GMHa6KRx_oosToVqnETEx0')
+bot = telepot.Bot('Write Yor Telegram Bot Token')
 bot.message_loop(handle)
 
 print("BOT IS READY")
