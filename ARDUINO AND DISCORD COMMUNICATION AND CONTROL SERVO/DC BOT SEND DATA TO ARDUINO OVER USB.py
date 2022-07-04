@@ -12,7 +12,7 @@ Bot = commands.Bot(command_prefix ="!! ")
 
 @Bot.event
 async def on_ready():
-    print("BOT HAZIR İŞLEME BAŞLIYABİLİRSİNİZ")
+    print("BOT IS READY")
     
     
 @Bot.command()    
@@ -21,4 +21,4 @@ async def SERVO_DONDUR(ctx, *args):
     arduino.write(data.encode('utf-8'))
     print(args[0])
     
-Bot.run('OTY1MjQ1MjMzNjM1OTIxOTMy.YlwYrQ.CGWbTAGFebpNXofD5fZglcXPRjE')
+Bot.run('WRITE HERE YOUR DICORD BOT TOKEN')
